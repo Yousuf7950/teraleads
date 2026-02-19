@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../api';
 
 export default function AuthPage() {
+  const navigate = useNavigate();
   const [mode, setMode] = useState('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,7 +19,7 @@ export default function AuthPage() {
       if (mode === 'login') {
         const { data } = await api.post('/auth/login', { email, password });
         localStorage.setItem('token', data.token);
-        window.location.href = '/dashboard';
+        navigate('/dashboard', { replace: true });
       } else {
         await api.post('/auth/register', { email, password, name: name || undefined });
         setMode('login');

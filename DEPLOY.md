@@ -63,15 +63,16 @@ Use this guide to deploy the app so you can share a live link. Recommended: **Re
 5. Click **Deploy**. Wait for the build to finish.
 6. Copy your frontend URL, e.g. `https://tera-leads-xxx.vercel.app`.
 
-**If repo root is monorepo:** set **Root Directory** to `frontend` so Vercel builds the React app.
+**If repo root is monorepo:** set **Root Directory** to `frontend` so Vercel builds the React app. The repo includes `frontend/vercel.json` so routes like `/dashboard` and `/chat` work on direct links and after login redirect (SPA fallback).
 
 ---
 
 ## 3. Connect frontend and backend
 
 1. **Backend (Render):** Open your Web Service → **Environment** → add or edit:
-   - `FRONTEND_URL` = your Vercel URL (e.g. `https://tera-leads-xxx.vercel.app`). No trailing slash.
-   - Click **Save Changes**. Optionally trigger a **Manual Deploy** so CORS picks up the new origin.
+   - `FRONTEND_URL` = your Vercel URL (e.g. `https://teraleads-pied.vercel.app`). No trailing slash.
+   - Click **Save Changes**.
+   - **Important:** Trigger **Manual Deploy** → **Deploy latest commit** (or **Restart service**) so the backend restarts with the new `FRONTEND_URL`. Until you redeploy/restart, CORS will still use the old value and you may see CORS errors.
 2. **Frontend:** Already uses `VITE_API_URL` for API calls. If you didn’t set it in step 2, add `VITE_API_URL` in Vercel and redeploy.
 
 ---
@@ -95,15 +96,21 @@ Use this guide to deploy the app so you can share a live link. Recommended: **Re
 
 ---
 
+## How to check if your Render backend is working
+
+- **Root:** Open your backend URL in the browser, e.g. `https://teraleads.onrender.com/`. You should see JSON like `{"message":"TeraLeads API","docs":"/health for health check"}`. If you see **"Cannot GET /"**, the server is running but didn’t have a root route yet—redeploy after pulling the latest code, or use the health check below.
+- **Health check:** Open `https://teraleads.onrender.com/health`. You should see `{"ok":true}`. This is the best way to confirm the API is up (and to wake a sleeping free-tier service).
+- If the first request takes 30–60 seconds, the free-tier instance was sleeping; later requests should be fast.
+
 ## Quick reference
 
 | Item | Where |
 |------|--------|
-| Backend URL | Render dashboard → your Web Service → URL (e.g. `https://tera-leads-api.onrender.com`) |
-| Frontend URL | Vercel dashboard → your Project → Domain |
+| Backend URL | Render dashboard → your Web Service → URL (e.g. `https://teraleads.onrender.com`) |
+| Frontend URL | Vercel dashboard → your Project → Domain (e.g. `https://teraleads-pied.vercel.app`) |
 | Backend env | Render → Web Service → Environment |
 | Frontend env | Vercel → Project → Settings → Environment Variables |
-| Health check | `GET https://your-app.onrender.com/health` |
+| Health check | `GET https://teraleads.onrender.com/health` |
 
 ---
 
